@@ -2,8 +2,8 @@
 
 ## FUNCTIONALITIES
 
-1.  DETECT MOVEMENT
-..* Set up (Get starting sensor info)
+1.  DETECT MOVEMENT  
+..* Set up (Get starting sensor info)  
 ..* Check loop
 **Compass**
 **Accelerometer**
@@ -15,5 +15,5 @@
 
 
 ## EXTRA IMPROVEMENTS
-Alarm ON/OFF can be controlled remotely
-Include temperature sensor for signalling if a window has been left open
+Alarm ON/OFF can be controlled remotely  
+Include temperature sensor for signalling if a window has been left open  
