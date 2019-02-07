@@ -17,3 +17,4 @@
 ## EXTRA IMPROVEMENTS
 Alarm ON/OFF can be controlled remotely  
 Include temperature sensor for signalling if a window has been left open  
+If intrusion is detected, have the possibility of calling police
