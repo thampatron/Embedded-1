@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import Calibrate
 import RunAcc
 import RunCompass
