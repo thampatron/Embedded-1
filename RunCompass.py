@@ -1,0 +1,62 @@
+import smbus
+import time
+import math
+
+bus = smbus.SMBus(1)
+
+address = 0x1e
+
+def read_byte(adr):
+    return bus.read_byte_data(address, adr)
+
+def read_word(adrL, adrH):
+        high = bus.read_byte_data(address, adrH)
+        low = bus.read_byte_data(address, adrL)
+        val = (high << 8) + low
+        return val
+
+def read_word_2c(adrL, adrH):
+        val = read_word(adrL, adrH)
+        if (val >= 0x8000):
+                return -((65535 - val) + 1)
+        else:
+                return val
+
+def write_byte(adr, value):
+    bus.write_byte_data(address, adr, value)
+    
+def Run(compData):
+    mean = compData[0]
+    stddev = compData[1]
+    count = 0
+    scale = 0.92
+    offset = 4 * stddev
+
+    x_out = read_word_2c(4,3) * scale
+    z_out = read_word_2c(6,5) * scale
+
+    bearing  = math.atan2(z_out, x_out) 
+    if (bearing < 0):
+        bearing += 2 * math.pi
+    bearing = math.degrees(bearing)
+
+    while True:
+        x_out = read_word_2c(4,3) * scale
+        z_out = read_word_2c(6,5) * scale
+
+        bearing  = math.atan2(z_out, x_out) 
+        if (bearing < 0):
+            bearing += 2 * math.pi
+        bearing = math.degrees(bearing)
+
+        if bearing > (mean - offset) and bearing < (mean + offset):
+            #send open
+        elif (count == 600):
+            #send ok
+            count = 0
+        else:
+            count = count + 1
+
+
+
+        time.sleep(0.1)
