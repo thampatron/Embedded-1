@@ -4,19 +4,27 @@ import Calibrate
 import RunAcc
 import RunCompass
 import RunTemp
-from thread import start_new_thread
+from threading import Thread
         
 def main():
+    threads = []
+    calibrated = False
 
-    call = False
-
-    while call == False:
+    while calibrated == False:
         Readings = Calibrate.Calibrate()
-        call = Calibrate.Check(Readings)
+        calibrated = Calibrate.Check(Readings)
 
-    start_new_thread(RunAcc.Run,)
-    start_new_thread(RunCompass.Run, (Readings["comp"],))
-    start_new_thread(RunTemp.Run, (Readings["temp"],))
+    threadComp = Thread(target=RunCompass.Run, args=Readings["comp"])
+    threadAcc = Thread(target=RunAcc.Run)
+    threadTemp = Thread(target=RunTemp.Run, args=Readings["temp"])
 
+    threads.append(threadComp)
+    threads.append(threadAcc)
+    threads.append(threadTemp)
 
-if __name__ == "__main__":main()
+    threadComp.start()
+    threadAcc.start()
+    threadTemp.start()
+
+if __name__ == "__main__":
+    main()

@@ -1,10 +1,12 @@
 import smbus
 import time
 import math
+from API_network import send, initSender
 from statistics import stdev
 
-
+client = initSender()
 bus = smbus.SMBus(1)
+msg = "PalomaTest"
 
 def read_byte(sensorAdr, adr):
         return bus.read_byte_data(sensorAdr, adr)
@@ -21,16 +23,6 @@ def read_word_2c(sensorAdr, adrL, adrH):
                 return -((65535 - val) + 1)
         else:
                 return val
-
-# def read_word_2c(sensorAdr, adrL, adrH = None):
-#         val = read_word(sensorAdr, adrL)
-#         if adrH is not None: 
-#             val_H = read_word(sensorAdr, adrH)
-#             val = val + (val_H >> 8)
-#         if (val >= 0x8000):
-#                 return -((65535 - val) + 1)
-#         else:
-#                 return val
 
 def write_byte(sensorAdr, adr, value):
         bus.write_byte_data(sensorAdr, adr, value)
@@ -49,14 +41,12 @@ def Calibrate():
         Y_outs = []
         Z_outs = []
         Readings = {
-            "bearing" : [],
+            "comp" : [],
             "x" : [],
             "y" : [],
             "z" : [], 
             "temp" : []
         }
-        means = []
-        stds = []
 
         AccAddr = 0x18
         CompAddr = 0x1E
@@ -80,10 +70,12 @@ def Calibrate():
                 Comp_Z = read_word_2c(CompAddr, 0x06, 0x05) * scale
                 Bearing  = convert_2_bearing(Comp_Z, Comp_X)
 
-                # Read Accelerometer
+                # Read Accelerometer  ----- No need to calibrate Accelerometer
                 Acc_X = read_word_2c(AccAddr, 0x28, 0x29)
                 Acc_Y = read_word_2c(AccAddr, 0x2A, 0x2B)
                 Acc_Z = read_word_2c(AccAddr, 0x2C, 0x2D)
+
+                # -- Temp needs to calibrate
                 temp = read_word_2c(AccAddr, 0x0C, 0x0D)
                 temp = temp >> 6
 
@@ -94,20 +86,20 @@ def Calibrate():
                 Z_outs.append(Acc_Z)
                 temps.append(temp)
         
-        means.append(sum(Readings["bearings"])/float(len(Readings["bearings"])))
-        stds.append(stdev(Readings["bearings"]))
+        Readings["comp"].append(sum(bearings)/float(len(bearings)))
+        Readings["comp"].append(stdev(bearings))
         
-        means.append(sum(Readings["x"])/float(len(Readings["x"])))
-        stds.append(stdev(Readings["x"]))
+        Readings["x"].append(sum(X_outs)/float(len(X_outs)))
+        Readings["x"].append(stdev(X_outs))
 
-        means.append(sum(Readings["y"])/float(len(Readings["y"])))
-        stds.append(stdev(Readings["y"]))
+        Readings["y"].append(sum(Y_outs)/float(len(Y_outs)))
+        Readings["y"].append(stdev(Y_outs))
 
-        means.append(sum(Readings["z"])/float(len(Readings["z"])))
-        stds.append(stdev(Readings["z"]))
+        Readings["z"].append(sum(Z_outs)/float(len(Z_outs)))
+        Readings["z"].append(stdev(Z_outs))
 
-        means.append(sum(Readings["temp"])/float(len(Readings["temp"])))
-        stds.append(stdev(Readings["temp"]))
+        Readings["temp"].append(sum(temps)/float(len(temps)))
+        Readings["temp"].append(stdev(temps))
 
         # print("Bearing : mean : " + str(Readings["bearings"][0]) + ", standard deviation : " + str(Readings["bearings"][1]))
 
@@ -122,29 +114,25 @@ def Calibrate():
         return Readings
 
 def Check(Readings):
-    response = 0
-    if Readings["bearings"][1] > 0.5: 
-        
-        if response == "Again":
-            return False
+        if Readings["bearings"][1] > 0.5: 
+                send(client, None, "PalomAlert/calibration/retry", qos=1)
+                return False
 
-    if Readings["x"][1] > 220:
-        # Send
-        if response == "Again":
-            return False
+        if Readings["x"][1] > 220:
+                send(client, None, "PalomAlert/calibration/retry", qos=1)
+                return False
 
-    if Readings["y"][1] > 220:
-        # Send
-        if response == "Again":
-            return False
+        if Readings["y"][1] > 220:
+                send(client, None, "PalomAlert/calibration/retry", qos=1)
 
-    if Readings["z"][1] > 220:
-        # Send
-        if response == "Again":
-            return False
+                return False
 
-    if Readings["temp"][1] > 1.5:
-        # Send
-        if response == "Again":
-            return False
-    return True 
+        if Readings["z"][1] > 220:
+                send(client, None, "PalomAlert/calibration/retry", qos=1)
+                return False
+
+        if Readings["temp"][1] > 1.5:
+                send(client, None, "PalomAlert/calibration/retry", qos=1)
+                return False
+        send(client, None, "PalomAlert/calibration/ok", qos=1)
+        return True 
