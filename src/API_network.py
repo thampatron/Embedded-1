@@ -28,7 +28,7 @@ def send(client, msg, topic="PalomAlert/test", qos=0):
 
 # API initialize client for receiving
 # *** PROCESS-BLOCKING FUNCTION ***
-def initReceiver(topicList=["PalomAlert/test"], clientID = "PalomAlertReceive", qos=1):
+def initReceiver(topicList=["PalomAlert/test"], clientID = "PalomAlertReceive", qos=2):
     # remove write lock if it was left by past receiver
     if os.path.isfile("./lock.txt"):
         os.remove("./lock.txt")
