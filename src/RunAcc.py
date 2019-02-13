@@ -2,11 +2,12 @@
 
 import smbus
 import time
+from API_network import *
 from statistics import stdev
 
 
 bus = smbus.SMBus(1)
-
+client = initSender()
 address = 0x18
 
 def read_byte(adr):
@@ -50,9 +51,11 @@ def Run():
         deviation = stdev(z_outs)
         z_outs.clear()
         if deviation > 400:
-            # Send shake
+            # Check format of message with Serena
+            send(client, msg, "PalomAlert/acc/shake")
         elif (count == 600):
-            # Send ok
+            # Check format of message with Serena
+            send(client, msg, "PalomAlert/acc/running", qos =1)
             count = 0
         else:
             count = count + 1

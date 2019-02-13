@@ -1,8 +1,10 @@
 import smbus
 import time
 import math
+from API_network import *
 
 bus = smbus.SMBus(1)
+client = initSender()
 
 address = 0x1e
 
@@ -50,9 +52,11 @@ def Run(compData):
         bearing = math.degrees(bearing)
 
         if bearing > (mean - offset) and bearing < (mean + offset):
-            #send open
+            # Check format of message with Serena
+            send(client, msg, "PalomAlert/comp/open")
         elif (count == 600):
-            #send ok
+            # Check format of message with Serena
+            send(client, msg, "PalomAlert/comp/running", qos =1)
             count = 0
         else:
             count = count + 1
