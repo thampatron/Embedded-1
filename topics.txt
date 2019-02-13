@@ -34,14 +34,7 @@ PalomAlert/acc/running
 
 PalomAlert/acc/shake
     -   Door shaking detected by the accelerometer
-    -   Payload --> {
-                    "detectionTime" :   value (in seconds)
-                    "detectionDate" :   {
-                                        "day"   : value (1-31)
-                                        "month" : value (1-12)
-                                        "year"  : value 
-                                        }
-                    }
+    -   Payload --> detectionTime (string)
 
 
 
@@ -55,14 +48,7 @@ PalomAlert/comp/running
 
 PalomAlert/comp/open
     -   Door opening detected by the compass
-    -   Payload --> {
-                    "detectionTime" :   value (in seconds)
-                    "detectionDate" :   {
-                                        "day"   : value (1-31)
-                                        "month" : value (1-12)
-                                        "year"  : value 
-                                        }
-                    }
+    -   Payload --> detectionTime (string)
 
 
 
@@ -72,6 +58,4 @@ PalomAlert/comp/open
 
 PalomAlert/temp/change
     -   Regular update from the thermometer
-    -   Payload --> {
-                    "temperature" : value
-                    }
+    -   Payload --> temperature (number)
