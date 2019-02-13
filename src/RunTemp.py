@@ -1,7 +1,7 @@
 import smbus
 import time
 import math
-from API_network import *
+from API_network import send, initSender
 
 bus = smbus.SMBus(1)
 client = initSender()
@@ -28,7 +28,6 @@ def write_byte(adr, value):
     
 def Run(tempData):
     mean = tempData[0]
-    stddev = tempData[1]
     count = 0
     offset = 8
 
@@ -37,14 +36,13 @@ def Run(tempData):
         temp = read_word_2c(0x0C, 0x0D)
         temp = temp >> 6
 
-        if temp > (mean - offset) and bearing < (mean + offset):
-            send(client, "Temp out of range", "PalomAlert/temp/change")
-        elif (count == 600):
-            send(client, "Temp out of range", "PalomAlert/temp/running", qos =1)
-            count = 0
+        if temp < (mean - offset) and temp > (mean + offset):
+                
+                send(client, temp, "PalomAlert/temp/change")
+        if (count == 600):
+                send(client, None, "PalomAlert/temp/running", qos =1)
+                count = 0
         else:
-            count = count + 1
-
-
+                count = count + 1
 
         time.sleep(0.1)

@@ -2,7 +2,7 @@
 
 import smbus
 import time
-from API_network import *
+from API_network import send, initSender
 from statistics import stdev
 
 
@@ -37,8 +37,6 @@ def convert_data( dataL, dataH):
     
 def Run():
     z_outs = []
-    
-    time.sleep(0.1)
     count = 0
 
     while True:
@@ -51,11 +49,11 @@ def Run():
         deviation = stdev(z_outs)
         z_outs.clear()
         if deviation > 400:
-            # Check format of message with Serena
-            send(client, msg, "PalomAlert/acc/shake")
-        elif (count == 600):
-            # Check format of message with Serena
-            send(client, msg, "PalomAlert/acc/running", qos =1)
+            ts = time.ctime(int(time.time()))           # Get timestamp
+            send(client, ts, "PalomAlert/acc/shake")
+        if (count == 600):
+            send(client, None, "PalomAlert/acc/running", qos =1)
             count = 0
         else:
             count = count + 1
+        time.sleep(0.1)
