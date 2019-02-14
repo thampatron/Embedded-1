@@ -66,9 +66,11 @@ def on_message(client, userdata, message):
     elif topic == "PalomAlert/acc/shake":
         status["accelerometer"]["lastUpdate"] = currTime
         status["accelerometer"]["lastIntrusion"] = payload
+        status["accelerometer"]["isShook"] = "yes"
 
     elif topic == "PalomAlert/acc/running":
         status["accelerometer"]["lastUpdate"] = currTime
+        status["accelerometer"]["isShook"] = "no"
 
     elif topic == "PalomAlert/comp/open":
         status["compass"]["lastUpdate"] = currTime

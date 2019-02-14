@@ -14,7 +14,8 @@
     }, 
 
     "accelerometer": {
-        "lastIntrusion": "", 
+        "lastIntrusion": "",
+        "isShook": "", 
         "lastUpdate": ""
     },
 
