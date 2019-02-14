@@ -1,5 +1,0 @@
-{
-    "Temperature" :  "The home temperature is sensed using a thermometer which can detect a drop or rise in temperature. If the temperature is under a certain thershold an alert for an open window is sent. If the home temperature is above a certain threshold an alert for a possible fire is sent.",
-    "At Home" : "Tell PalomAlert if you are home or away, to send you alerts if your home door is being forced. "
-
-}
