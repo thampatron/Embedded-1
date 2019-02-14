@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+  
+
+    <meta charset="utf-8">
+    <meta http-equiv="refresh" content="5"/>
+    <title>Flask Tutorial</title>
+    
+    <style>
+      
+      .box {
+        float: left;
+        border-style: solid;
+        border-width: 4px;
+        background-color: white;
+        border-color:#6600CC;
+        margin: 0 ;
+        box-sizing: border-box;
+        margin-right: 100px;
+        margin-top: 300px;
+        margin-left: 110px;
+        padding: 20px;
+        height: 350px;
+        width: 340px;
+        
+        
+      } 
+      
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  float: 50%;
+  left:30px;
+  margin-left:10px;
+  margin-top:10px;
+  top: 20px;
+  display: inline-block;
+  width: 120px;
+  height: 68px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #00CC66;
+  -webkit-transition: .8s;
+  transition: .8s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 52px;
+  width: 52px;
+  left: 8px;
+  bottom: 8px;
+  background-color: white;
+  -webkit-transition: .8s;
+  transition: .8s;
+}
+
+input:checked + .slider {
+  background-color: #FF6666;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 2px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(52px);
+  -ms-transform: translateX(52px);
+  transform: translateX(52px);
+}
+.home{
+  color:black;
+  font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;
+  text-align:center;
+  font-size: 300%;
+  margin-top:10px;
+}
+/* Rounded sliders */
+.slider.round {
+  border-radius: 68px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+.title{
+  
+  font-size: 450%;
+  text-align: center;
+  
+
+  margin : 0;
+  padding-bottom: 85px;
+  padding-top: 40px;
+  border-radius: 15px 15px;
+  color: white;
+  font-weight:lighter
+  
+}
+.TempVal {
+  
+  text-align: center;
+  font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;
+  font-size: 400%;
+}
+.OC{
+  font-size: 290%;
+  font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;
+  color: #E0E0E0
+  
+}
+      </style>
+  </head>
+  <body>
+    <h1 style="background-color :#6600CC; padding-top:50px; padding-bottom:35px;" class="title" ><img src="{{url_for('static' , filename='PalomAlert.png')}}"> </h1>
+   <h1  style="color: #e0e0e0; font-size:300%; margin-bottom:-100px;margin-left:350px;margin-top:80px;font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;">
+     System Status :  <h1  id="status"; style="color: #e0e0e0; font-size:350%; margin-bottom:-100px;margin-left:350px;margin-top:90px;font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;"></h1>
+     <br>
+    </h1> 
+    <h1 style="color: #e0e0e0; font-size:200%; margin-bottom:-150px;margin-left:350px;margin-top:110px; font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;">
+      Last updated :
+       </h1> 
+    
+    <div  class = "box" style="border-radius:50px 18px">
+        <h2 class = "home";> Home Temperature</h2>
+        <h1 id= "TempVal"; class = "TempVal">{{temp}}°C
+          
+        </h1>
+        <div style= "clear: both">
+            <h2  class ="OC"; style= "float: left; margin-top:-15px; font-size: 150%; margin-bottom:-35px;  margin-right:50px";  id="fire">
+              OPEN WINDOW    
+            </h2>
+
+            <h2 class= "OC"; style="float:right;margin-right:5px; margin-top:-15px; font-size: 150%;margin-bottom:-35px; ";  id="window">
+                  FIRE
+            </h2>
+          </div>
+      </div>
+      
+    <div class="box"; style="border-radius:18px 18px">
+      <h2 class="home">At Home?</h2>
+      <!-- Rounded switch -->
+      
+<label class="switch" style="left:60px">
+    <input type="checkbox">
+    <span class="slider round"></span>
+  </label>
+    </div>
+    
+    <div class= "box"; style="border-radius:18px 50px">
+      <h2 class = "home"; >Door is</h2>
+        <div style= "clear: both" >
+          <h2  class ="OC";  style="margin-top: 10px;"; style= "padding-left : 5px;"  id="open/close">
+          OPEN 
+          </h2>
+        
+          <h2 class= "OC";  margin-right="5px";  id="open/closee">
+             CLOSED
+          </h2>
+        </div>
+    </div>
+    <script> 
+      /*setInterval(function(){
+        var mydata = status;
+        console.log(status["thermometer"].temperature);
+        document.getElementById("TempVal").innerHTML = status["thermometer"].temperature;
+      },4000);*/
+
+
+
+///////////////// HOME TEMPERATURE COLOR LOGIC/////////////////
+
+        var color = "";
+        var color_closed = "";
+        var temperature = '{{temp}}';
+        console.log(temperature);
+        
+        console.log(temperature);
+        if(parseFloat(temperature) < 14.0) {
+            color = "#2196F3";
+            color_closed= "#E0E0E0";
+          }
+        else if (parseFloat(temperature) > 30.0){
+            color_closed = "#FF6666";
+            color = "#E0E0E0";
+          }
+        else{
+          color = "#E0E0E0";
+          color_closed = "#E0E0E0"
+        }
+           
+          document.getElementById("fire").style.color = color;
+          console.log(document.getElementById("fire").style.color);
+          //document.getElementById("open/close").innerHTML = text;
+          document.getElementById("fire").style.color.rgb = color;
+          document.getElementById("window").style.color = color_closed;
+          console.log(document.getElementById("window").style.color);
+          
+           
+///////////////// DOOR OPEN/CLOSE COLOR LOGIC/////////////////
+      
+        is_open='{{is_open}}'
+        console.log(is_open)
+        
+        color = "";
+        color_closed = "";
+        if(is_open == "yes") {
+            color = "#00CC66";
+            color_closed= "#E0E0E0";
+          }
+        else{
+            color_closed = "#FF6666";
+            color = "#E0E0E0";
+          }
+          
+          document.getElementById("open/close").style.color = color;
+          console.log(document.getElementById("open/close").style.color);
+          //document.getElementById("open/close").innerHTML = text;
+          document.getElementById("open/close").style.color.rgb = color;
+          document.getElementById("open/closee").style.color = color_closed;
+          console.log(document.getElementById("open/closee").style.color);
+          
+         
+    
+          system_status = '{{system_status}}';
+          console.log(system_status);
+          if(system_status == "connected"){
+            inner = document.getElementById("status").innerHTML;
+            document.getElementById("status").innerHTML = inner + "Connected";
+            document.getElementById("status").style.color = "#00CC66";
+            document.getElementById("status").style.fontFamily = "'MuseoSlab500Regular', arial, helvetica, sans-serif";
+            
+          }
+          else if(system_status == "retrying"){
+            inner = document.getElementById("status").innerHTML;
+            document.getElementById("status").innerHTML = inner + "Connected";
+            document.getElementById("status").style.color = "#00CC66";
+            document.getElementById("status").style.fontFamily = "'MuseoSlab500Regular', arial, helvetica, sans-serif";
+          }
+        
+          
+          
+  </script>
+ 
+   </body>
+</html>

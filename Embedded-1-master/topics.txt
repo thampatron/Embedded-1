@@ -1,0 +1,61 @@
+List of topics with their meaning and payload structure convention
+
+##############
+#### TEST ####
+##############
+
+PalomAlert/test
+    -   Used for testing the network
+    -   Payload --> whatever you want
+
+
+
+#####################
+#### CALIBRATION ####
+#####################
+
+PalomAlert/calibration/ok
+    -   Sensors calibration performed correctly
+    -   Payload --> None
+
+PalomAlert/calibration/retry
+    -   Sensors calibration failed, but Pi is retrying
+    -   Payload --> None
+
+
+
+#######################
+#### ACCELEROMETER ####
+#######################
+
+PalomAlert/acc/running
+    -   Regular update from the accelerometer
+    -   Payload --> None
+
+PalomAlert/acc/shake
+    -   Door shaking detected by the accelerometer
+    -   Payload --> detectionTime (string)
+
+
+
+#################
+#### COMPASS ####
+#################
+
+PalomAlert/comp/running
+    -   Regular update from the compass
+    -   Payload --> None
+
+PalomAlert/comp/open
+    -   Door opening detected by the compass
+    -   Payload --> detectionTime (string)
+
+
+
+#####################
+#### THERMOMETER ####
+#####################
+
+PalomAlert/temp/change
+    -   Regular update from the thermometer
+    -   Payload --> temperature (number)
