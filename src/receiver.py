@@ -12,4 +12,4 @@ topics = [
     "PalomAlert/calibration/retry"
 ]
 
-initReceiver(topicList=topics ,clientID="swag99_receive",qos=2)
+initReceiver(topicList=topics ,clientID="palomalert",qos=2)

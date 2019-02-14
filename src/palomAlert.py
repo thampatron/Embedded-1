@@ -1,12 +1,14 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import json
 import time
+import datetime
 
 def get_status():
     with open("status.json", "r") as f:
         status_dict = json.load(f)
     return status_dict
 
+home_status = True
 
 app = Flask(__name__)
 
@@ -15,20 +17,50 @@ def home():
     status = get_status()
     last_update = status["lastFileUpdate"]
     temp = status["thermometer"]["temperature"]
-    print(temp)
+
+
     is_open = status["compass"]["isOpen"]
+    t_open = status["lastFileUpdate"]
+    t = int(time.time()) - int(t_open)
+    t_open = datetime.timedelta(seconds=t)
+    shaker = status["accelerometer"]["isShook"]
+  
+
     #time_ago = last_update - time.time
     #print(time_ago)
-    return render_template("paloma.html", temp=temp, is_open=is_open, system_status="connected") # last_update, sysON, #, opendoor, door-shake
+    return render_template("paloma.html", temp=temp, t_open= t_open, is_open=is_open, shake=shaker,home_status= home_status, system_status="connected")
 
+@app.route('/home', methods=['POST'])
+def update_home_status():
+    if(home):
+        home = False
+    else:
+        home = True
+    return render_template("paloma.html", temp=temp, t_open= t_open, is_open=is_open, shake=shaker,home_status= home_status, system_status="connected")
 
-
-def status_change():
-    new_status = get_status()
-    if new_status is status:
-        return False
-    return True
-status = get_status()
+@app.route('/home', methods = ['GET', 'POST', 'DELETE'])
+def user(user_id):
+    print("HELLOOOOO")
+    if request.method == 'GET':
+        """return the information for <user_id>"""
+          
+    if request.method == 'POST':
+        """modify/update the information for <user_id>"""
+        # you can use <user_id>, which is a str but could
+        # changed to be int or whatever you want, along
+        # with your lxml knowledge to make the required
+        # changes
+        data = request.form # a multidict containing POST data   
+        print("HELLOOOOO")
+    if request.method == 'DELETE':
+        """delete user with ID <user_id>""" 
+    
+        # POST Error 405 Method Not Allowed
+#def status_change():        
+#    new_status = get_status()
+#    if new_status is status:
+#        return False
+#    return True
 
 #print(status)
 #starttime=time.time()

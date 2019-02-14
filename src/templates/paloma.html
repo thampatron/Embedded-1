@@ -5,6 +5,7 @@
 
 
   <meta charset="utf-8">
+  <meta http-equiv="refresh" content="3"/>
   <!--  <meta http-equiv="refresh" content="5" />-->
   <title>Flask Tutorial</title>
 
@@ -33,6 +34,7 @@
     .switch {
       display: inline-block;
       position: relative;
+      margin-top: 50px;
       float: 50%;
       left: 30px;
       top: 20px;
@@ -123,10 +125,11 @@
     }
 
     .TempVal {
-      padding-top: 10px;
+      padding-top: 30px;
       text-align: center;
       font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;
-      font-size: 300%;
+      font-size: 500%;
+      margin-bottom: -50px;
     }
 
     .OC {
@@ -240,8 +243,8 @@
     </div>
     <div class="col-sm-6" style="padding-top: 30px; text-align: right">
       <h1 style="color: #000; font-size:250%; font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;">
-        <h1 style="padding-top:10px; padding-right:350px"class="status"> System Status : <h1  id="status"; style="color: #e0e0e0; font-size:300%; margin-bottom:-110px;  text-align: right; margin-left:350px;font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;"></h1>
-        <h1 style="padding-right:10px; padding-top:50px" class="last-updated">Last Updated : </h1><h1  id="t_status"; style="color: #e0e0e0; padding-right:350px;padding-left:100px; font-size:300%; margin-bottom:0;padding-bottom:40px; padding-top:40px;text-align: right; font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;"></h1>
+        <h1 style="padding-top:10px; padding-right:350px"class="status"> System Status : <h1  id="status"; style="color: #e0e0e0; font-size:300%;padding-right: 350px; margin-bottom:-110px;  text-align: right; font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;"></h1>
+        <h1 style="padding-right:10px;font-size:220% " class="last-updated">Last Updated : </h1><h1  id="t_open"; style="color: #6600CC;position:relative; font-size:180%; padding-bottom:40px; padding-top:20px;text-align: right; font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;"></h1>
       
       </h1>
     </div>
@@ -252,44 +255,50 @@
       <div class="col-sm-4">
 
         <div class="box" style="border-radius:50px 18px">
-          <h2 class="home" ;> Home Temp (°C) </h2>
-          <h1 id="TempVal" ; class="TempVal">{{temp}}
-
-          </h1>
+            
+         
           <div style="clear: both">
-            <h2 class="OC" ; style="float: left; font-size: 150%; margin-bottom:-35px;  margin-right:50px" ; margin-left="5px" ; id="fire">
-              OPEN WINDOW
-            </h2>
-
-            <h2 class="OC" ; style="float: left; font-size: 150%;margin-bottom:-35px; " ; id="window">
-              FIRE
-            </h2>
-          </div>
+            <form action="/home" method="post">
+              <h2 class="OC" ; id= "atHome" style="margin-top: 70px;margin-bottom:50px" align=center  onclick="colorChanger()" style="padding-left : 5px;" >
+                AT HOME
+              </h2>
+              <h2 style="color :#FF6666""" class="OC"; id= "away" style="padding-top:260px"; margin-right="5px" align=center onclick="colorChanger()" >
+               NOT HOME 
+              </h2>
+            
+            </div>
+          
         </div>
 
       </div>
       <div class="col-sm-4">
         <div class="box" ; style="border-radius:18px 18px">
-          <h2 class="home">At Home?</h2>
-          <!-- Rounded switch -->
-
-          <label class="switch" style="left:60px">
-    <input type="checkbox">
-    <span class="slider round"></span>
-  </label>
+            <h2 class="home" ;> Home Temp (°C) </h2>
+            <h1 id="TempVal" stye="font-size:500%"; class="TempVal">{{temp}}
+  
+            </h1>
+            <div style="clear: both">
+                <h2 class="OC" ; style="float: left; font-size: 150%; padding-top:150px; margin-top:-35px; margin-bottom:-35px;  margin-right:50px" ; margin-left="5px" ; id="fire">
+                  OPEN WINDOW
+                </h2>
+    
+                <h2 class="OC" ; style="text-align:right; padding-top:115px;padding-right:10px; font-size: 150%;margin-bottom:-35px; " ; id="window">
+                  FIRE
+                </h2>
+              </div>
         </div>
 
       </div>
       <div class="col-sm-4">
 
         <div class="box" ; style="border-radius:18px 50px">
-          <h2 class="home" ;>Door is</h2>
+          <h2 style="padding-bottom:30px;  padding-top:20px; padding-left:10px;color:black;" align=center class="OC" ;>DOOR</h2>
           <div style="clear: both">
-            <h2 class="OC" ; style="margin-top: 10px;" ; style="padding-left : 5px;" id="open/close">
+            <h2 class="OC" ; style="margin-top: 10px; padding-bottom:10px;" ; align=center style="padding-left : 5px;" id="open/close">
               OPEN
             </h2>
 
-            <h2 class="OC" ; margin-right="5px" ; id="open/closee">
+            <h2 class="OC"  margin-right="5px" align=center id="open/closee">
               CLOSED
             </h2>
           </div>
@@ -310,8 +319,11 @@
 
 
   </div>
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script type="text/javascript"></script>
   <script>
+    
+     console.log('{{shake}}');
     var dt = new Date();
     document.getElementById("datetime").innerHTML = (dt.getFullYear());
 
@@ -319,14 +331,20 @@
   <script>
 
 
+
+    var at_home;
+    if('{{shake}}' == "yes" && !at_home){
+      alert("INTRUSION! Are you home? Someone is at the door. ");
+    }
+
 ///////////////// HOME TEMPERATURE COLOR LOGIC/////////////////
 
     var color = "";
     var color_closed = "";
     var temperature = '{{temp}}';
-    console.log(temperature);
+    
 
-    console.log(temperature);
+    
     if (parseFloat(temperature) < 14.0) {
       color = "#2196F3";
       color_closed = "#E0E0E0";
@@ -339,17 +357,17 @@
     }
 
     document.getElementById("fire").style.color = color;
-    console.log(document.getElementById("fire").style.color);
+    
     //document.getElementById("open/close").innerHTML = text;
     document.getElementById("fire").style.color.rgb = color;
     document.getElementById("window").style.color = color_closed;
-    console.log(document.getElementById("window").style.color);
+    
 
 ///////////////// DOOR OPEN/CLOSE COLOR LOGIC/////////////////
 
 
     is_open = '{{is_open}}'
-    console.log(is_open)
+    
 
     color = "";
     color_closed = "";
@@ -362,15 +380,15 @@
     }
 
     document.getElementById("open/close").style.color = color;
-    console.log(document.getElementById("open/close").style.color);
+    
     //document.getElementById("open/close").innerHTML = text;
     document.getElementById("open/close").style.color.rgb = color;
     document.getElementById("open/closee").style.color = color_closed;
-    console.log(document.getElementById("open/closee").style.color);
+ 
 ///////////////// DOOR OPEN/CLOSE COLOR LOGIC/////////////////
       
 is_open='{{is_open}}'
-        console.log(is_open)
+       
         
         color = "";
         color_closed = "";
@@ -384,32 +402,62 @@ is_open='{{is_open}}'
           }
           
           document.getElementById("open/close").style.color = color;
-          console.log(document.getElementById("open/close").style.color);
+          
           //document.getElementById("open/close").innerHTML = text;
           document.getElementById("open/close").style.color.rgb = color;
           document.getElementById("open/closee").style.color = color_closed;
-          console.log(document.getElementById("open/closee").style.color);
+
+//////////// HOME/AWAY ////////////////
+ function colorChanger(){
+        var color_home;
+        var color_away;
+        if(document.getElementById("away").style.color.rgb == "#FF6666") {
+            color_home = "#00CC66";
+            color_away= "#E0E0E0"; 
+        }
+        else{
+            color_home = "#E0E0E0";
+            color_away = "#FF6666";
+          }
           
-         
+          document.getElementById("atHome").style.color = color_home;
+          
+          //document.getElementById("open/close").innerHTML = text;
+          //document.getElementById("atHome").style.color.rgb = color_home;
+          document.getElementById("away").style.color = color_away;
+        }
+         time_open = '{{t_open}}';
+         if(time_open>60){
+           time_open = time_open %60;
+          
+           document.getElementById("t_open").innerHTML = time_open + " minutes ago";
+         }
+         console.log(time_open);
+         //time_open = time_open.substring(0, str.length-1);
+         document.getElementById("t_open").innerHTML = time_open + " seconds ago";
+         document.getElementById("t_open").style.fontFamily = "'MuseoSlab500Regular', arial, helvetica, sans-serif";
+
     
           system_status = '{{system_status}}';
-          console.log(system_status);
-          if(system_status == "connected"){
-            inner = document.getElementById("t_status").innerHTML;
-            document.getElementById("t_status").innerHTML = inner + "Connected";
-            document.getElementById("t_status").style.color = "#00CC66";
-            document.getElementById("t_status").style.fontFamily = "'MuseoSlab500Regular', arial, helvetica, sans-serif";
+          console.log(t_open);
+          if(parseInt('{{t_open}}') < 90){
+            inner = document.getElementById("status").innerHTML;
+            document.getElementById("status").innerHTML = inner + "Disconnected";
+            document.getElementById("status").style.color = "#FF6666";
+            document.getElementById("status").style.fontFamily = "'MuseoSlab500Regular', arial, helvetica, sans-serif";
+          }
+          else if(system_status == "connected"){
+            inner = document.getElementById("status").innerHTML;
+            document.getElementById("status").innerHTML = inner + "Connected";
+            document.getElementById("status").style.color = "#00CC66";
+            document.getElementById("status").style.fontFamily = "'MuseoSlab500Regular', arial, helvetica, sans-serif";
             
           }
-          else if(system_status == "retrying"){
-            inner = document.getElementById("t_status").innerHTML;
-            document.getElementById("t_status").innerHTML = inner + "Connected";
-            document.getElementById("t_status").style.color = "#00CC66";
-            document.getElementById("t_status").style.fontFamily = "'MuseoSlab500Regular', arial, helvetica, sans-serif";
-          }
+          
 
   </script>
-  <script>
+  
+  <script  >
     /* -----------------------------------------------
                             /* Author : Vincent Garreau  - vincentgarreau.com
                             /* MIT license: http://opensource.org/licenses/MIT
@@ -418,7 +466,7 @@ is_open='{{is_open}}'
                             /* How to use? : Check the GitHub README
                             /* v2.0.0
                             /* ----------------------------------------------- */
-
+   
     var pJS = function(tag_id, params) {
 
       var canvas_el = document.querySelector('#' + tag_id + ' > .particles-js-canvas-el');
@@ -2087,7 +2135,7 @@ is_open='{{is_open}}'
       },
       "retina_detect": true
     });
-
+    
   </script>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
