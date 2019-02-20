@@ -1,6 +1,5 @@
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
-from TopLevel import awayFromHome
 import json
 import time
 import subprocess
@@ -11,6 +10,7 @@ STATUS_LOCK = "./lock_status.txt"
 LOG_FILE = "./log.txt"
 LOG_LOCK = "./lock_log.txt"
 TEMPLATE_FILE = "./template.json"
+awayFromHome = False
 
 def update_log(status, topic):
     # prepare data
@@ -133,6 +133,7 @@ def on_message(client, userdata, message):
         status["sensorCalibration"]["status"] = "retrying"
 
     elif topic == "PalomAlert/run":
+        print("That's the way, uh huh, uh huh")
         subprocess.run("python3 /home/pi/src/TopLevel.py")
 
     elif topic == "PalomAlert/halt":

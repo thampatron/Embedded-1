@@ -5,10 +5,13 @@ import RunAcc
 import RunCompass
 import RunTemp
 from threading import Thread
+from API_network_callbacks import awayFromHome
 
-awayFromHome = False
+
         
 def main():
+    global awayFromHome
+    awayFromHome = False
     print("Top Level running")
     threads = []
     calibrated = False

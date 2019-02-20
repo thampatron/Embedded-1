@@ -6,3 +6,4 @@ topics = [
 ]
 
 initReceiver(topicList=topics ,clientID="piLoma",qos=2) 
+print("piBooted \n\n")
