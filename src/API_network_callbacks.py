@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
+from TopLevel import awayFromHome
 import json
 import time
 import os
@@ -77,6 +78,7 @@ def write_JSON(filename, data):
 # DEFINE CALLBACK FUNCTIONS FOR RECEIVER
 
 def on_message(client, userdata, message):
+    global awayFromHome
     # get current STATUS
     status = read_JSON(STATUS_FILE)
     # decode message payload
@@ -128,6 +130,12 @@ def on_message(client, userdata, message):
     elif topic == "PalomAlert/calibration/retry":
         status["sensorCalibration"]["lastUpdate"] = currTime
         status["sensorCalibration"]["status"] = "retrying"
+
+    elif topic == "PalomAlert/run":
+        # Run TopLevel.py
+
+    elif topic == "PalomAlert/halt":
+        awayFromHome = True
     
     # write JSON
     write_JSON(STATUS_FILE, status)
