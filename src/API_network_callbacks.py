@@ -3,6 +3,7 @@ import paho.mqtt.publish as publish
 from TopLevel import awayFromHome
 import json
 import time
+import subprocess
 import os
 
 STATUS_FILE = "./status.json"
@@ -132,7 +133,7 @@ def on_message(client, userdata, message):
         status["sensorCalibration"]["status"] = "retrying"
 
     elif topic == "PalomAlert/run":
-        # Run TopLevel.py
+        subprocess.run("python3 /home/pi/src/TopLevel.py")
 
     elif topic == "PalomAlert/halt":
         awayFromHome = True
