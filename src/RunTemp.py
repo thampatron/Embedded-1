@@ -4,7 +4,6 @@ import math
 from API_network import send, initSender
 
 bus = smbus.SMBus(1)
-client = initSender()
 address = 0x18
 
 def read_byte(adr):
@@ -27,22 +26,29 @@ def write_byte(adr, value):
     bus.write_byte_data(address, adr, value)
     
 def Run(tempData):
-    mean = tempData[0]
-    count = 0
-    offset = 8
+        mean = tempData[0] + 10                 # Conversion to celcius
+        count = 60
+        offset = 4
+        client = initSender("PalomAlert/temp")
+
+        while True:
+                temp = read_word_2c(0x0C, 0x0D)
+                temp = temp >> 6
+
+                temp = temp + 10                # Conversion to celcius
 
 
-    while True:
-        temp = read_word_2c(0x0C, 0x0D)
-        temp = temp >> 6
-
-        if temp < (mean - offset) and temp > (mean + offset):
-                
-                send(client, temp, "PalomAlert/temp/change")
-        if (count == 600):
-                send(client, None, "PalomAlert/temp/running", qos =1)
-                count = 0
-        else:
-                count = count + 1
-
-        time.sleep(0.1)
+                if ( temp < (mean - offset) or temp > (mean + offset) ):
+                        count = 60
+                        payload = {
+                                "temp" : temp,
+                                "ts" : time.time()
+                        }
+                        send(client, payload, "PalomAlert/temp/change", qos=2)
+                        time.sleep(3)           # To ensure messages aren't being sent at too high a frequency
+                elif (count >= 60):
+                        send(client, str(temp), "PalomAlert/temp/running", qos =2) # Running message indicates to the server that the PalomAlert is live, and there is no intrusion happening
+                        count = 0
+                else:
+                        count = count + 1
+                time.sleep(1)

@@ -7,7 +7,6 @@ from statistics import stdev
 
 
 bus = smbus.SMBus(1)
-client = initSender()
 address = 0x18
 
 def read_byte(adr):
@@ -37,23 +36,28 @@ def convert_data( dataL, dataH):
     
 def Run():
     z_outs = []
-    count = 0
+    count = 50*60
+    client = initSender("PalomAlert/acc")
 
     while True:
-        for i in range(0,10):
-            z_out_L = read_byte(0x2C) 
-            z_out_H = read_byte(0x2D)
-            z_out = convert_data(z_out_L, z_out_H)
+        for i in range(0,30):
+                z_out_L = read_byte(0x2C) 
+                z_out_H = read_byte(0x2D)
+                z_out = convert_data(z_out_L, z_out_H)
 
-            z_outs.append(z_out)
+                z_outs.append(z_out)
         deviation = stdev(z_outs)
         z_outs.clear()
-        if deviation > 400:
-            ts = time.ctime(int(time.time()))           # Get timestamp
-            send(client, ts, "PalomAlert/acc/shake")
-        if (count == 600):
-            send(client, None, "PalomAlert/acc/running", qos =1)
-            count = 0
+
+        if (deviation > 1000):
+                count = 50*60              # To send ok message after event no longer
+                ts = time.time()          # Get timestamp
+                send(client, ts, "PalomAlert/acc/shake", qos=2)
+                time.sleep(3.5)                         # To ensure messages aren't being sent at too high a frequency
+
+        elif (count >= 50*60):
+                send(client, None, "PalomAlert/acc/running", qos =2)   # Running message indicates to the server that the PalomAlert is live, and there is no intrusion happening
+                count = 0
         else:
-            count = count + 1
-        time.sleep(0.1)
+                count = count + 1
+        time.sleep(0.02)
