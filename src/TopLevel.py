@@ -37,7 +37,6 @@ def main():
     threadTemp.start()
 
     while not awayFromHome:
-        print("Pass")
         pass
     
     print("Exiting Top Level")

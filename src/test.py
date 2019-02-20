@@ -4,10 +4,10 @@ import time
 
 client = initSender("PalomAlert/run")
 
-send(client, None, "PalomAlert/run", qos=2)
+send(client, None, "PalomAlert/run", qos=1)
 
 time.sleep(20)
 
-send(client, None, "PalomAlert/helt", qos=2)
+send(client, None, "PalomAlert/halt", qos=1)
 
 print("The test is complete!")

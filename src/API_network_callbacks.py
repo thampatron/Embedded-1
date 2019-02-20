@@ -2,6 +2,7 @@ import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 import json
 import time
+import signal
 import subprocess
 import os
 
@@ -133,11 +134,11 @@ def on_message(client, userdata, message):
         status["sensorCalibration"]["status"] = "retrying"
 
     elif topic == "PalomAlert/run":
-        print("That's the way, uh huh, uh huh")
-        subprocess.run("python3 /home/pi/src/TopLevel.py")
+        process = subprocess.Popen("python3 TopLevel.py", stdout=subprocess.PIPE, 
+                       shell=True, preexec_fn=os.setsid)
 
     elif topic == "PalomAlert/halt":
-        awayFromHome = True
+        os.killpg(os.getpgid(process.pid), signal.SIGTERM)  # Send the signal to all the process group
     
     # write JSON
     write_JSON(STATUS_FILE, status)
