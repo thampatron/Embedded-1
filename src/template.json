@@ -1,0 +1,26 @@
+{
+    "lastFileUpdate": "", 
+
+    "thermometer": {
+        "lastUpdate": "", 
+        "temperature": "", 
+        "lastEmergency": ""
+    }, 
+        
+    "compass": {
+        "lastIntrusion": "", 
+        "isOpen": "", 
+        "lastUpdate": ""
+    }, 
+
+    "accelerometer": {
+        "lastIntrusion": "",
+        "isShook": "", 
+        "lastUpdate": ""
+    },
+
+    "sensorCalibration": {
+        "status": "", 
+        "lastUpdate": ""
+    }
+}

@@ -1,4 +1,5 @@
 import time
+import random
 from API_network import *
 
 def getMsg(n):
@@ -8,13 +9,13 @@ def getMsg(n):
     acc_z = random.randint(1,50)
 
     payload = {
-        "msg no" : str(n),
-        "compass" : str(compass),
-        "acc" : {
-        "acc_x" : str(acc_x),
-        "acc_y" : str(acc_y),
-        "acc_z" : str(acc_z)
-        }
+        # "compass" : str(compass),
+        # "acc" : {
+        #     "acc_x" : str(acc_x),
+        #     "acc_y" : str(acc_y),
+        #     "acc_z" : str(acc_z),
+        # }
+        "msg no" : str(n)
     }
 
     return payload
@@ -23,14 +24,12 @@ def getMsg(n):
 
 
 
-client = initSender()
-for i in range(100):
-
-
+client = initSender(clientID="swag99_send")
+for i in range(10000):
     print("sending message ", i)
     message = getMsg(i)
-    send(client, message)
-    time.sleep(2)
+    send(client, message, qos=2)
+    time.sleep(0.2)
 
 print("all messages have been sent")
 
