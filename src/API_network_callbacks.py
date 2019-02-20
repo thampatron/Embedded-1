@@ -5,17 +5,45 @@ import time
 import os
 
 STATUS_FILE = "./status.json"
+STATUS_LOCK = "./lock_status.txt"
+LOG_FILE = "./log.txt"
+LOG_LOCK = "./lock_log.txt"
+TEMPLATE_FILE = "./template.json"
 
+def update_log(status, topic):
+    # prepare data
+    data = {}
+    data["timeStamp"] = time.ctime(status["lastFileUpdate"])
+    data["topic"] = topic
+    data["status"] = status
+    # wait for resource to be freed
+    while os.path.isfile(LOG_LOCK):
+        pass
+    # add lock
+    lock = open(LOG_LOCK, "w")
+    lock.close()
+    while os.path.isfile(LOG_LOCK) is False:
+        pass
+    # append data to log
+    update = json.dumps(data)
+    JSONfile = open(LOG_FILE, "a")
+    JSONfile.write(update)
+    JSONfile.write("\n")
+    JSONfile.close()
+    # remove lock
+    os.remove(LOG_LOCK)
+    while os.path.isfile(LOG_LOCK):
+        pass  
 
 
 def read_JSON(filename):
 
     # check if stats file is there 
     # otherwise copy data from template
-    if os.path.isfile(STATUS_FILE):
+    if os.path.isfile(filename):
         #wait for resource to be freed
-        while os.path.isfile("./lock.txt"):
-            print("lock found")
+        while os.path.isfile(STATUS_LOCK):
+            pass
         # read file
         JSONfile = open(filename, "r+")
         data = json.load(JSONfile)
@@ -30,9 +58,9 @@ def read_JSON(filename):
 
 def write_JSON(filename, data):
     # add lock
-    lock = open("./lock.txt", "w")
+    lock = open(STATUS_LOCK, "w")
     lock.close() 
-    while os.path.isfile("./lock.txt") is False:
+    while os.path.isfile(STATUS_LOCK) is False:
         pass     
     # write file
     update = json.dumps(data)
@@ -40,8 +68,8 @@ def write_JSON(filename, data):
     JSONfile.write(update)
     JSONfile.close()
     # remove lock
-    os.remove("./lock.txt")
-    while os.path.isfile("./lock.txt"):
+    os.remove(STATUS_LOCK)
+    while os.path.isfile(STATUS_LOCK):
         pass
 
 
@@ -67,6 +95,7 @@ def on_message(client, userdata, message):
         status["accelerometer"]["lastUpdate"] = currTime
         status["accelerometer"]["lastIntrusion"] = payload
         status["accelerometer"]["isShook"] = "yes"
+        update_log(status, topic)
 
     elif topic == "PalomAlert/acc/running":
         status["accelerometer"]["lastUpdate"] = currTime
@@ -76,6 +105,7 @@ def on_message(client, userdata, message):
         status["compass"]["lastUpdate"] = currTime
         status["compass"]["lastIntrusion"] = payload
         status["compass"]["isOpen"] = "yes"
+        update_log(status, topic)
 
     elif topic == "PalomAlert/comp/running":
         status["compass"]["lastUpdate"] = currTime
@@ -85,6 +115,7 @@ def on_message(client, userdata, message):
         status["thermometer"]["lastUpdate"] = currTime
         status["thermometer"]["lastEmergency"] = payload["ts"]
         status["thermometer"]["temperature"] = payload["temp"]
+        update_log(status, topic)
 
     elif topic == "PalomAlert/temp/running":
         status["thermometer"]["lastUpdate"] = currTime
