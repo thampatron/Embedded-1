@@ -8,7 +8,7 @@
   <meta charset="utf-8">
 
     
-  <!-----<meta http-equiv="refresh" content="4" >--->
+  <!------<meta http-equiv="refresh" content="4" >--->
   <title>Flask Tutorial</title>
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -267,9 +267,13 @@
     </div>
     <div class="col-sm-6" style="padding-top: 30px; text-align: right">
       <h1 style="color: #000; font-size:250%; font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;">
-        <h1 style="padding-top:10px; padding-right:500px"class="status"> System Status : <h1  id="status"; style="color: #e0e0e0; font-size:300%; margin-bottom:-110px;  padding-right:180px;text-align: right; margin-left:350px;font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;"></h1>
-        <h1 style="padding-right:180px; padding-top:53px" class="last-updated">Last Updated : </h1><h1  id="t_status"; style="color: #e0e0e0; padding-right:510px; font-size:300%; margin-bottom:0;padding-bottom:40px; padding-top:20px;text-align: right; font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;"></h1>
-      </h1>
+        <h1 style="padding-right:150px; "class="status"> System Status :             &nbsp  &nbsp&nbsp &nbsp&nbsp  &nbsp&nbsp&nbsp &nbsp&nbsp      Last Updated : </h1>
+        <div>
+        <h1  id="t_status"; style="color: #e0e0e0; width:100px; font-size:300%; margin-right:0;padding-left:20px; display: inline; padding-top:0px; float:left; font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;">
+     
+      <h1  id="last_update"; style="color: #e0e0e0; font-size:200%; margin-right:30px; float: right; display: inline;font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;"></h1>
+    </h1>
+  </div>  
     </div>
   </div>
 
@@ -296,7 +300,7 @@
       <div class="col-sm-4">
       
         <div class="box" ; style="border-radius:18px 18px">
-          <h2 class="home">At Home?</h2>
+          <h2 class="home style="font-size: 3em;">At Home?</h2>
           <!-- Rounded switch -->
 
           <label class="switch" style="left:80px">
@@ -326,17 +330,15 @@
     {% endfor %}
   </div>
       </div>
-
         <div class="box"  style="border-radius:18px 50px; margin-top: 0px;">
-            <h2 class="home"  style="margin-top: 50px; padding-left : 5px; font-size: 500%;" id="open/close">
+            <h2 class="home"  style=" padding-left : 5px; font-size: 300%;" >
               DOOR
             </h2>
           <div style="clear: both">
-            <h2 class="OC" ; style="margin-top: 50px;" ; style="padding-left : 5px;" id="open/close">
+            <h2 class="OC" ; style="margin-top: 50px; padding-left : 5px;" id="open/close">
               OPEN
             </h2>
-
-            <h2 class="OC" ; margin-right="5px" ; id="open/closee">
+            <h2 class="OC"  id="open/closee">
               CLOSED
             </h2>
           </div>
@@ -347,15 +349,8 @@
     <p>© Copyright PalomAlert <span id="datetime"> </span></p>
   </footer>
  
- 
-
-
   </div>
   </div>
-
-
-
-
   </div>
   
   <script>
@@ -371,15 +366,14 @@
       });
     });
     
-    
+   
+    document.getElementById("last_update").innerHTML = "{{t_open}}";
 ///////////////// HOME TEMPERATURE COLOR LOGIC/////////////////
 
     var color = "";
     var color_closed = "";
     var temperature = '{{temp}}';
-    console.log(temperature);
-
-    console.log(temperature);
+    
     if (parseFloat(temperature) < 14.0) {
       color = "#2196F3";
       color_closed = "#E0E0E0";
@@ -392,74 +386,41 @@
     }
 
     document.getElementById("fire").style.color = color;
-    console.log(document.getElementById("fire").style.color);
-    //document.getElementById("open/close").innerHTML = text;
     document.getElementById("fire").style.color.rgb = color;
     document.getElementById("window").style.color = color_closed;
-    console.log(document.getElementById("window").style.color);
+    
 
-///////////////// DOOR OPEN/CLOSE COLOR LOGIC/////////////////
-
-
-    is_open = '{{is_open}}'
-    console.log(is_open)
-
-    color = "";
-    color_closed = "";
-    if (is_open == "yes") {
-      color = "#00CC66";
-      color_closed = "#E0E0E0";
-    } else {
-      color_closed = "#FF6666";
-      color = "#E0E0E0";
-    }
-
-    document.getElementById("open/close").style.color = color;
-    console.log(document.getElementById("open/close").style.color);
-    //document.getElementById("open/close").innerHTML = text;
-    document.getElementById("open/close").style.color.rgb = color;
-    document.getElementById("open/closee").style.color = color_closed;
-    console.log(document.getElementById("open/closee").style.color);
 ///////////////// DOOR OPEN/CLOSE COLOR LOGIC/////////////////
       
-is_open='{{is_open}}'
-        console.log(is_open)
-        
-        color = "";
-        color_closed = "";
-        if(is_open == "yes") {
-            color = "#00CC66";
-            color_closed= "#E0E0E0";
-          }
-        else{
-            color_closed = "#FF6666";
-            color = "#E0E0E0";
-          }
-          
-          document.getElementById("open/close").style.color = color;
-          console.log(document.getElementById("open/close").style.color);
-          //document.getElementById("open/close").innerHTML = text;
-          document.getElementById("open/close").style.color.rgb = color;
-          document.getElementById("open/closee").style.color = color_closed;
-          console.log(document.getElementById("open/closee").style.color);
-          
-         
+is_open='{{is_open}}'       
+color = "";
+color_closed = "";
+if(is_open == "yes") {
+    color = "#00CC66";
+    color_closed= "#E0E0E0";
+  }
+else{
+    color_closed = "#FF6666";
+    color = "#E0E0E0";
+  }
+  document.getElementById("open/close").style.color = color;
+  document.getElementById("open/close").style.color.rgb = color;
+  document.getElementById("open/closee").style.color = color_closed;
+
+  system_status = '{{system_status}}';
+  if(system_status == "connected"){
+    inner = document.getElementById("t_status").innerHTML;
+    document.getElementById("t_status").innerHTML = inner + "Connected";
+    document.getElementById("t_status").style.color = "#00CC66";
+    document.getElementById("t_status").style.fontFamily = "'MuseoSlab500Regular', arial, helvetica, sans-serif";
     
-          system_status = '{{system_status}}';
-          console.log(system_status);
-          if(system_status == "connected"){
-            inner = document.getElementById("t_status").innerHTML;
-            document.getElementById("t_status").innerHTML = inner + "Connected";
-            document.getElementById("t_status").style.color = "#00CC66";
-            document.getElementById("t_status").style.fontFamily = "'MuseoSlab500Regular', arial, helvetica, sans-serif";
-            
-          }
-          else if(system_status == "retrying"){
-            inner = document.getElementById("t_status").innerHTML;
-            document.getElementById("t_status").innerHTML = inner + "Connected";
-            document.getElementById("t_status").style.color = "#00CC66";
-            document.getElementById("t_status").style.fontFamily = "'MuseoSlab500Regular', arial, helvetica, sans-serif";
-          }
+  }
+  else if(system_status == "retrying"){
+    inner = document.getElementById("t_status").innerHTML;
+    document.getElementById("t_status").innerHTML = inner + "Connected";
+    document.getElementById("t_status").style.color = "#00CC66";
+    document.getElementById("t_status").style.fontFamily = "'MuseoSlab500Regular', arial, helvetica, sans-serif";
+  }
 
   </script>
   <script>

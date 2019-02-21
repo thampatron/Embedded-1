@@ -1,5 +1,1 @@
-<<<<<<< HEAD
 {"lastFileUpdate": 1550753396, "thermometer": {"lastUpdate": 1550753396, "temperature": "15", "lastEmergency": 1550751405.8755133}, "compass": {"lastIntrusion": 1550753305.4638035, "isOpen": "no", "lastUpdate": 1550753309}, "accelerometer": {"lastIntrusion": 1550753308.9836662, "isShook": "no", "lastUpdate": 1550753312}, "sensorCalibration": {"status": "ok", "lastUpdate": 1550753211}}
-=======
-{"compass": {"lastUpdate": 1550681623, "isOpen": "no", "lastIntrusion": 1550681619.9959834}, "accelerometer": {"isShook": "no", "lastUpdate": 1550681627, "lastIntrusion": 1550681623.7613442}, "lastFileUpdate": 1550681829, "thermometer": {"lastEmergency": 1550681190.2704928, "lastUpdate": 1550681829, "temperature": "18"}, "sensorCalibration": {"lastUpdate": 1550681399, "status": "ok"}}
->>>>>>> 20e203e8a1593756db97b27389988e7462e2425b
