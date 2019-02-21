@@ -15,10 +15,16 @@ def main():
     print("Top Level running")
     threads = []
     calibrated = False
+
+
+    # Calibration Loop
     
     while calibrated == False:
         Readings = Calibrate.Calibrate()
         calibrated = Calibrate.Check(Readings)
+
+
+    # Once calibrated, a thread is generated for each component
 
     threadComp = Thread(target=RunCompass.Run, args=(Readings["comp"],))
     threadAcc = Thread(target=RunAcc.Run)
@@ -32,15 +38,15 @@ def main():
     threads.append(threadAcc)
     threads.append(threadTemp)
 
+    # Run the threads
+
     threadComp.start()
     threadAcc.start()
     threadTemp.start()
 
-    while not awayFromHome:
+    # Keep the program running as to not terminate the daemonic threads
+    while True:
         pass
-    
-    print("Exiting Top Level")
-    return
 
 if __name__ == "__main__":
     main()

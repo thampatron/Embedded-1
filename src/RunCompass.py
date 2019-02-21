@@ -53,30 +53,37 @@ def isOutOfRange360(bearing, LThreshold, HThreshold):
 
 def Run(compData):
         mean = compData[0]
-        count = 600                                     # Count to send periodic message saying process still running
+        count = 600                                     # Count allows us to send a 'running' message ~1 a minute
         countOpen = 0                                   # Set to alert if door is open for whole minute
-        scale = 0.92
+        scale = 0.92                                    # Scale needed to convert to degrees
         offset = 0.9
         client = initSender("PalomAlert/comp")
         sendMsg = True                                  # Allow to send message
 
         while True:
+
+                # Read compass data
+
                 x_out = read_word_2c(4,3) * scale
                 y_out = read_word_2c(8,7) * scale       # Read but unused - the sensor stops updating if left unread
                 z_out = read_word_2c(6,5) * scale
 
                 bearing  = convert_2_bearing(z_out, x_out)
 
-                if (isOutOfRange360(bearing, mean - offset, mean + offset) and sendMsg ) or (countOpen==600):
+
+                # Checking if door is open & a msg hasn't been sent yet or if door has been open for over a minute
+                if (isOutOfRange360(bearing, mean - offset, mean + offset) and sendMsg ) or (countOpen>=600):
                         ts = time.time()                 # Get timestamp
                         send(client, ts, "PalomAlert/comp/open", qos=2)
                         time.sleep(3)                   # To ensure messages aren't being sent at too high a frequency
                         sendMsg = False
-                        count = 600
+                        count = 600                     # Ensures 'running' message is sent after the door is closed
                         countOpen = 0           
+
+                # Checking if door has stayed open
                 if isOutOfRange360(bearing, mean - offset, mean + offset) and (not sendMsg):
                         countOpen = countOpen + 1       # CountOpen ensures no repeat messages are sent until the door has been open for a minute
-                        pass
+
                 elif (count >= 600):
                         send(client, None, "PalomAlert/comp/running", qos=2)        # Running message indicates to the server that the PalomAlert is live, and there is no intrusion happening
                         count = 0
