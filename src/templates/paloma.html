@@ -41,6 +41,18 @@
       height: 300px;
       width: 340px;
     }
+    .xsbox {
+      display: inline-block;
+      
+      /* fallback for old browsers */
+      margin: 0;
+      box-sizing: border-box;
+      margin-right: 0px;
+      margin-left: 0px;
+      padding-top: 10px;
+      height: 150px;
+      
+    }
 
     /* The switch - the box around the slider */
 
@@ -301,10 +313,18 @@
       </div>
       <div class="col-sm-4">
         <div class="sbox" ; style="border-radius:18px 50px">
-        <h2 style="display:inline-block; color: white;font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;">Event Log:</h2>
+        <h2 style="display:inline-block; margin-right: 50px; color: white;font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;">Event Log:</h2>
+        
+        <div class="xsbox" style="width: 140px; margin-top:-40px; border-radius:18px 50px; display: inline-block;">
         {% for your_list_element in your_list %}
         <p style="color: white;font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;">- {{ your_list_element }} </p>
     {% endfor %}  
+        </div>
+        <div class="xsbox" ; style="width: 190px; border-radius:18px 50px; display: inline-block;">
+    {% for t_log_element in t_log %}
+      <p style="color: #F5F5F5;font-family: 'MuseoSlab500Regular', arial, helvetica, sans-serif;font-size:100%">{{ t_log_element }} </p>
+    {% endfor %}
+  </div>
       </div>
 
         <div class="box"  style="border-radius:18px 50px; margin-top: 0px;">
