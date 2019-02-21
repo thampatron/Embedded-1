@@ -40,9 +40,7 @@ def update_log(status, topic):
 
 
 def read_JSON(filename):
-
     # check if stats file is there 
-    # otherwise copy data from template
     if os.path.isfile(filename):
         #wait for resource to be freed
         while os.path.isfile(STATUS_LOCK):
@@ -52,6 +50,7 @@ def read_JSON(filename):
         data = json.load(JSONfile)
         JSONfile.close()
         return data
+    # otherwise copy data from template
     else:
         with open(TEMPLATE_FILE, 'r') as myfile:
             templateData=myfile.read().replace('\n', '')

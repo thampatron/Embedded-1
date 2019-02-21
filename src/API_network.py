@@ -4,15 +4,30 @@ import json
 import os
 from API_network_callbacks import *
 
+TLS_CERTIFICATE = "-- INSERT PATH TO DEVICE CERTIFICATE --"
 
+
+def initConnect(client, tls = False):
+    # Send messages over HTTPS
+    if tls:
+        brokerAddr = "ee-estott-octo.ee.ic.ac.uk"
+        portNo = 8080
+        client.tls_set(TLS_CERTIFICATE, tls_version=ssl.PROTOCOL_TLSv1_2)
+        client.tls_insecure_set(True)
+        client.connect(brokerAddr, port=portNo)
+
+    # Send messages over MQTT
+    else:
+        brokerAddr = "broker.hivemq.com"
+        portNo = 1883
+        client.connect(brokerAddr, port=portNo)
+
+    return client
 
 # API Initialize client for sending
-def initSender(clientID = "PalomAlertSend"):
-    # brokerAddr = "test.mosquitto.org"
-    brokerAddr = "broker.hivemq.com"
+def initSender(clientID = "PalomAlertSend", tls = False):
     client = mqtt.Client(clientID)
-    portNo = 1883 ######## NO TLS --> TODO
-    client.connect(brokerAddr, port=portNo)
+    client = initConnect(client, tls)
     return client
 
 
@@ -28,18 +43,17 @@ def send(client, msg, topic="PalomAlert/test", qos=0):
 
 # API initialize client for receiving
 # *** PROCESS-BLOCKING FUNCTION ***
-def initReceiver(topicList=["PalomAlert/test"], clientID = "PalomAlertReceive", qos=2):
+def initReceiver(topicList=["PalomAlert/test"], clientID = "PalomAlertReceive", qos=2, tls = False):
     # remove write lock if it was left by past receiver
-    if os.path.isfile("./lock.txt"):
-        os.remove("./lock.txt")
-    # brokerAddr = "test.mosquitto.org"
+    if os.path.isfile(LOG_LOCK):
+        os.remove(LOG_LOCK)
+    if os.path.isfile(STATUS_LOCK):
+        os.remove(STATUS_LOCK)
     client = mqtt.Client(clientID)
     # Attach functions to topic-wise callbacks
     client.on_message = on_message
     # connect to broker
-    brokerAddr = "broker.hivemq.com"
-    portNo = 1883 ######## NO TLS --> TODO
-    client.connect(brokerAddr, port=portNo)
+    client = initConnect(client, tls)
     # subscribe to topics
     for topic in topicList:
         client.subscribe(topic, qos)
