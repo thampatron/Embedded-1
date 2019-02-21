@@ -3,6 +3,7 @@ import paho.mqtt.publish as publish
 import json
 import os
 from API_network_callbacks import *
+import ssl
 
 TLS_CERTIFICATE = "./certs/m2mqtt_ca.crt"
 
