@@ -23,6 +23,7 @@ def initConnect(client, tls = False):
         portNo = 1883
         client.connect(brokerAddr, port=portNo)
 
+    print("Connected.")
     return client
 
 # API Initialize client for sending
