@@ -40,9 +40,7 @@ def update_log(status, topic):
 
 
 def read_JSON(filename):
-
     # check if stats file is there 
-    # otherwise copy data from template
     if os.path.isfile(filename):
         #wait for resource to be freed
         while os.path.isfile(STATUS_LOCK):
@@ -52,6 +50,7 @@ def read_JSON(filename):
         data = json.load(JSONfile)
         JSONfile.close()
         return data
+    # otherwise copy data from template
     else:
         with open(TEMPLATE_FILE, 'r') as myfile:
             templateData=myfile.read().replace('\n', '')
@@ -80,7 +79,6 @@ def write_JSON(filename, data):
 # DEFINE CALLBACK FUNCTIONS FOR RECEIVER
 
 def on_message(client, userdata, message):
-    global awayFromHome
     # get current STATUS
     status = read_JSON(STATUS_FILE)
     # decode message payload
@@ -135,10 +133,10 @@ def on_message(client, userdata, message):
 
     elif topic == "PalomAlert/run":
         process = subprocess.Popen("python3 TopLevel.py", stdout=subprocess.PIPE, 
-                       shell=True, preexec_fn=os.setsid)
+                       shell=True, preexec_fn=os.setsid)        # Run the PalomAlert as parent of a process group
 
     elif topic == "PalomAlert/halt":
-        os.killpg(os.getpgid(process.pid), signal.SIGTERM)  # Send the signal to all the process group
+        os.killpg(os.getpgid(process.pid), signal.SIGTERM)  # Send the signal to kill the whole process group
     
     # write JSON
     write_JSON(STATUS_FILE, status)

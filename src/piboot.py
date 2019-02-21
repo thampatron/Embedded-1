@@ -5,6 +5,4 @@ topics = [
     "PalomAlert/halt"
 ]
 
-print("piBooted \n\n")
-
-initReceiver(topicList=topics ,clientID="piLoma",qos=1) 
+initReceiver(topicList=topics ,clientID="piLoma",qos=2) 

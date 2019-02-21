@@ -29,7 +29,7 @@ for i in range(10000):
     print("sending message ", i)
     message = getMsg(i)
     send(client, message, qos=2)
-    time.sleep(0.2)
+    time.sleep(0.5)
 
 print("all messages have been sent")
 
