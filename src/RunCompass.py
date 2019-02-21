@@ -4,7 +4,6 @@ import math
 from API_network import send, initSender
 
 bus = smbus.SMBus(1)
-client = initSender()
 
 address = 0x1e
 
@@ -27,39 +26,64 @@ def read_word_2c(adrL, adrH):
 def write_byte(adr, value):
     bus.write_byte_data(address, adr, value)
     
-def Run(compData):
-    mean = compData[0]
-    stddev = compData[1]
-    count = 0
-    scale = 0.92
-    offset = 4 * stddev
-
-    x_out = read_word_2c(4,3) * scale
-    z_out = read_word_2c(6,5) * scale
-
-    bearing  = math.atan2(z_out, x_out) 
-    if (bearing < 0):
-        bearing += 2 * math.pi
-    bearing = math.degrees(bearing)
-
-    while True:
-        x_out = read_word_2c(4,3) * scale
-        z_out = read_word_2c(6,5) * scale
-
-        bearing  = math.atan2(z_out, x_out) 
+def convert_2_bearing(North, West):
+        bearing  = math.atan2(North, West) 
         if (bearing < 0):
             bearing += 2 * math.pi
-        bearing = math.degrees(bearing)
+        val = math.degrees(bearing)
+        return val
 
-        if bearing < (mean - offset) and bearing > (mean + offset):
-            ts = time.ctime(int(time.time()))                   # Get timestamp
-            send(client, ts, "PalomAlert/comp/open")
-        if (count == 600):
-            send(client, None, "PalomAlert/comp/running", qos =1)
-            count = 0
+def isOutOfRange360(bearing, LThreshold, HThreshold):
+        LThreshold = LThreshold % 360
+        HThreshold = HThreshold % 360
+
+        if(LThreshold < HThreshold):
+                if (LThreshold < bearing and bearing < HThreshold):
+                        return False
+                else:
+                        return True
         else:
-            count = count + 1
+                if(HThreshold < bearing and bearing < LThreshold):
+                        return True
+                else:
+                        return  False
 
 
 
-        time.sleep(0.1)
+
+def Run(compData):
+        mean = compData[0]
+        count = 600                                     # Count to send periodic message saying process still running
+        countOpen = 0                                   # Set to alert if door is open for whole minute
+        scale = 0.92
+        offset = 0.9
+        client = initSender("PalomAlert/comp")
+        sendMsg = True                                  # Allow to send message
+
+        while True:
+                x_out = read_word_2c(4,3) * scale
+                y_out = read_word_2c(8,7) * scale       # Read but unused - the sensor stops updating if left unread
+                z_out = read_word_2c(6,5) * scale
+
+                bearing  = convert_2_bearing(z_out, x_out)
+
+                if (isOutOfRange360(bearing, mean - offset, mean + offset) and sendMsg ) or (countOpen==600):
+                        ts = time.time()                 # Get timestamp
+                        send(client, ts, "PalomAlert/comp/open", qos=2)
+                        time.sleep(3)                   # To ensure messages aren't being sent at too high a frequency
+                        sendMsg = False
+                        count = 600
+                        countOpen = 0           
+                if isOutOfRange360(bearing, mean - offset, mean + offset) and (not sendMsg):
+                        countOpen = countOpen + 1       # CountOpen ensures no repeat messages are sent until the door has been open for a minute
+                        pass
+                elif (count >= 600):
+                        send(client, None, "PalomAlert/comp/running", qos=2)        # Running message indicates to the server that the PalomAlert is live, and there is no intrusion happening
+                        count = 0
+                        sendMsg = True
+                else:
+                        count = count + 1
+                        countOpen = 0
+                        sendMsg = True
+                
+                time.sleep(0.2)

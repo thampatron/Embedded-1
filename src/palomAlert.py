@@ -1,66 +1,55 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import json
 import time
-import datetime
 
 def get_status():
     with open("status.json", "r") as f:
         status_dict = json.load(f)
     return status_dict
 
-home_status = True
+
 
 app = Flask(__name__)
+@app.route('/postmethod', methods = ['POST'])
+def get_post_javascript_data():
+    jsdata = request.form['javascript_data']
+    if jsdata == "no":
+      app.at_home = "yes"
+    else:
+      app.at_home="no"
+
+    print (app.at_home)
+    status = get_status()
+    last_update = status["lastFileUpdate"]
+    temp = status["thermometer"]["temperature"]
+    print(temp)
+    is_open = status["compass"]["isOpen"]
+    #time_ago = last_update - time.time
+    #print(time_ago)
+    your_list=["1.20","2.40","3.40"]
+    print(app.at_home)
+    return  render_template("paloma.html", temp=temp, is_open=is_open,your_list=your_list,  t_open = last_update, at_home=app.at_home, system_status="connected") 
 
 @app.route("/")
 def home():
     status = get_status()
     last_update = status["lastFileUpdate"]
     temp = status["thermometer"]["temperature"]
-
-
+    print(temp)
     is_open = status["compass"]["isOpen"]
-    t_open = status["lastFileUpdate"]
-    t = int(time.time()) - int(t_open)
-    t_open = datetime.timedelta(seconds=t)
-    shaker = status["accelerometer"]["isShook"]
-  
-
     #time_ago = last_update - time.time
     #print(time_ago)
-    return render_template("paloma.html", temp=temp, t_open= t_open, is_open=is_open, shake=shaker,home_status= home_status, system_status="connected")
+    your_list=["1.20","2.40","3.40"]
+    print(app.at_home)
+    return render_template("paloma.html", temp=temp, is_open=is_open,your_list=your_list,t_open = last_update, at_home=app.at_home, system_status="connected") # last_update, sysON, #, opendoor, door-shake
 
-@app.route('/home', methods=['POST'])
-def update_home_status():
-    if(home):
-        home = False
-    else:
-        home = True
-    return render_template("paloma.html", temp=temp, t_open= t_open, is_open=is_open, shake=shaker,home_status= home_status, system_status="connected")
 
-@app.route('/home', methods = ['GET', 'POST', 'DELETE'])
-def user(user_id):
-    print("HELLOOOOO")
-    if request.method == 'GET':
-        """return the information for <user_id>"""
-          
-    if request.method == 'POST':
-        """modify/update the information for <user_id>"""
-        # you can use <user_id>, which is a str but could
-        # changed to be int or whatever you want, along
-        # with your lxml knowledge to make the required
-        # changes
-        data = request.form # a multidict containing POST data   
-        print("HELLOOOOO")
-    if request.method == 'DELETE':
-        """delete user with ID <user_id>""" 
-    
-        # POST Error 405 Method Not Allowed
-#def status_change():        
-#    new_status = get_status()
-#    if new_status is status:
-#        return False
-#    return True
+def status_change():
+    new_status = get_status()
+    if new_status is status:
+        return False
+    return True
+status = get_status()
 
 #print(status)
 #starttime=time.time()
@@ -77,6 +66,8 @@ def user(user_id):
 
 
 if __name__ == "__main__":
+    at_home="no"
+    app.at_home=at_home
     app.run(debug=True)
 
 

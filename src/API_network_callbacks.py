@@ -2,6 +2,8 @@ import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 import json
 import time
+import signal
+import subprocess
 import os
 
 STATUS_FILE = "./status.json"
@@ -9,6 +11,7 @@ STATUS_LOCK = "./lock_status.txt"
 LOG_FILE = "./log.txt"
 LOG_LOCK = "./lock_log.txt"
 TEMPLATE_FILE = "./template.json"
+awayFromHome = False
 
 def update_log(status, topic):
     # prepare data
@@ -77,6 +80,7 @@ def write_JSON(filename, data):
 # DEFINE CALLBACK FUNCTIONS FOR RECEIVER
 
 def on_message(client, userdata, message):
+    global awayFromHome
     # get current STATUS
     status = read_JSON(STATUS_FILE)
     # decode message payload
@@ -128,6 +132,13 @@ def on_message(client, userdata, message):
     elif topic == "PalomAlert/calibration/retry":
         status["sensorCalibration"]["lastUpdate"] = currTime
         status["sensorCalibration"]["status"] = "retrying"
+
+    elif topic == "PalomAlert/run":
+        process = subprocess.Popen("python3 TopLevel.py", stdout=subprocess.PIPE, 
+                       shell=True, preexec_fn=os.setsid)
+
+    elif topic == "PalomAlert/halt":
+        os.killpg(os.getpgid(process.pid), signal.SIGTERM)  # Send the signal to all the process group
     
     # write JSON
     write_JSON(STATUS_FILE, status)
