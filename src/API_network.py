@@ -4,7 +4,7 @@ import json
 import os
 from API_network_callbacks import *
 
-TLS_CERTIFICATE = "-- INSERT PATH TO DEVICE CERTIFICATE --"
+TLS_CERTIFICATE = "./certs/m2mqtt_ca.crt"
 
 
 def initConnect(client, tls = False):
