@@ -4,9 +4,9 @@ Imperial College London
 EE3-24 Embedded Systems  
 Coursework 1  
 
-Authors:    Alessandro Serena       as6316@ic.ac.uk  
-            Jordi Laguarta Soler    jl9516@ic.ac.uk  
-            Mateo Sarjanovic        ms6616@ic.ac.uk  
+Authors:&nbsp;&nbsp;&nbsp;&nbspAlessandro Serena       as6316@ic.ac.uk  
+&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbspJordi Laguarta Soler    jl9516@ic.ac.uk  
+&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbspMateo Sarjanovic        ms6616@ic.ac.uk  
   
 Readme version: 1.5  
 Date:           21 Feb 2019  
