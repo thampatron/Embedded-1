@@ -36,24 +36,24 @@ def convert_data( dataL, dataH):
     
 def Run():
     z_outs = []
-    count = 50*60
+    count = 50*60                               # Count allows us to send a 'running' message ~1 a minute
     client = initSender("PalomAlert/acc")
 
     while True:
-        for i in range(0,30):
+        for i in range(0,30):                   # The PalomAlert takes the standard deviation over the past 30 readings in order to tell whether the door is being shook - raw readings were too erratic to be used reliably
                 z_out_L = read_byte(0x2C) 
                 z_out_H = read_byte(0x2D)
                 z_out = convert_data(z_out_L, z_out_H)
 
                 z_outs.append(z_out)
         deviation = stdev(z_outs)
-        z_outs.clear()
+        z_outs.clear()                          # Clear the array to ensure next reading is correct
 
         if (deviation > 1000):
-                count = 50*60              # To send ok message after event no longer
-                ts = time.time()          # Get timestamp
+                count = 50*60                   # To indicate door isn't being shook again
+                ts = time.time()                # Get timestamp
                 send(client, ts, "PalomAlert/acc/shake", qos=2)
-                time.sleep(3.5)                         # To ensure messages aren't being sent at too high a frequency
+                time.sleep(3.5)                  # To ensure messages aren't being sent at too high a frequency
 
         elif (count >= 50*60):
                 send(client, None, "PalomAlert/acc/running", qos =2)   # Running message indicates to the server that the PalomAlert is live, and there is no intrusion happening

@@ -80,7 +80,6 @@ def write_JSON(filename, data):
 # DEFINE CALLBACK FUNCTIONS FOR RECEIVER
 
 def on_message(client, userdata, message):
-    global awayFromHome
     # get current STATUS
     status = read_JSON(STATUS_FILE)
     # decode message payload
@@ -135,10 +134,10 @@ def on_message(client, userdata, message):
 
     elif topic == "PalomAlert/run":
         process = subprocess.Popen("python3 TopLevel.py", stdout=subprocess.PIPE, 
-                       shell=True, preexec_fn=os.setsid)
+                       shell=True, preexec_fn=os.setsid)        # Run the PalomAlert as parent of a process group
 
     elif topic == "PalomAlert/halt":
-        os.killpg(os.getpgid(process.pid), signal.SIGTERM)  # Send the signal to all the process group
+        os.killpg(os.getpgid(process.pid), signal.SIGTERM)  # Send the signal to kill the whole process group
     
     # write JSON
     write_JSON(STATUS_FILE, status)
