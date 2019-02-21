@@ -42,7 +42,7 @@ def Run(tempData):
                 temp = temp + offset              
 
 
-                if ((temp < (mean - tolerance) or temp > (mean + tolerance)) and sendMsg) or countChange>=60:
+                if ((temp < (mean - tolerance/2) or temp > (mean + tolerance)) and sendMsg) or countChange>=60:
                         count = 60              # Ensures 'running' message is sent after the temperature returns to normal
                         countChange = 0
                         sendMsg = False
@@ -55,7 +55,7 @@ def Run(tempData):
                         time.sleep(3)           # To ensure messages aren't being sent at too high a frequency
 
                 # Checking if temperature has stayed outside of range
-                if (temp < (mean - tolerance) or temp > (mean + tolerance)) and (not sendMsg):
+                if (temp < (mean - tolerance/2) or temp > (mean + tolerance)) and (not sendMsg):
                         countChange = countChange + 1       # CountOpen ensures no repeat messages are sent until temperature remains changed for a minute
 
                 elif (count >= 60):
